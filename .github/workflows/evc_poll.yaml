@@ -38,7 +38,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          git add data/evc_flat_history.csv
+          git add data/evc_history.csv
           if git diff --cached --quiet; then
             echo "No changes to commit."
             exit 0
