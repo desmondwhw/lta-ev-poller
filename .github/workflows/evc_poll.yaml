@@ -31,7 +31,7 @@ jobs:
         env:
           LTA_ACCOUNT_KEY: ${{ secrets.LTA_ACCOUNT_KEY }}
         run: |
-          python poll_once_flat.py
+          python poll_once.py
 
       - name: Commit updated CSV back to repo
         run: |
