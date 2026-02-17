@@ -1,11 +1,10 @@
-name: Poll LTA EVCBatch every 5 minutes
+name: Poll LTA EVCBatch (flatten to CSV) every 5 minutes
 
 on:
   schedule:
-    - cron: "*/5 * * * *"    # every 5 minutes
-  workflow_dispatch:         # alternate trigger for manual runs
+    - cron: "*/5 * * * *"     # every 5 minutes
+  workflow_dispatch:          # alternate trigger for manual runs  
 
-# Prevent overlap if one run is slow
 concurrency:
   group: evc-poller
   cancel-in-progress: false
@@ -28,23 +27,22 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run poll once
+      - name: Run poll once (flatten + append)
         env:
           LTA_ACCOUNT_KEY: ${{ secrets.LTA_ACCOUNT_KEY }}
         run: |
-          python poll_once.py
+          python poll_once_flat.py
 
-      - name: Commit updated JSONL back to repo
+      - name: Commit updated CSV back to repo
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          # Only commit if file changed
-          git add data/evc_batch_history.jsonl
+          git add data/evc_flat_history.csv
           if git diff --cached --quiet; then
             echo "No changes to commit."
             exit 0
           fi
 
-          git commit -m "Update EVCBatch history (auto)"
+          git commit -m "Update flattened EVC history (auto)"
           git push
